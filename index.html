@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Monitor Remoto MQTT</title>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+  <h1>Datos en tiempo real (desde test.mosquitto.org)</h1>
+  <p><strong>Temperatura:</strong> <span id="temp">---</span> °C</p>
+  <p><strong>Humedad:</strong> <span id="hum">---</span> %</p>
+  <p><strong>Luz:</strong> <span id="luz">---</span> %</p>
+  <p><strong>Alertas:</strong></p>
+  <ul>
+    <li><strong>Temperatura:</strong> <span id="alerta-temp">---</span></li>
+    <li><strong>Humedad:</strong> <span id="alerta-hum">---</span></li>
+    <li><strong>Luz:</strong> <span id="alerta-luz">---</span></li>
+  </ul>
+
+  <script>
+    const client = mqtt.connect('wss://test.mosquitto.org:8081');
+
+    client.on('connect', function () {
+      console.log('Conectado a Mosquitto');
+      const topics = [
+        'sofia/temperatura',
+        'sofia/humedad',
+        'sofia/luz',
+        'sofia/alerta/temp',
+        'sofia/alerta/hum',
+        'sofia/alerta/luz'
+      ];
+      topics.forEach(t => client.subscribe(t));
+    });
+
+    client.on('message', function (topic, message) {
+      const text = message.toString();
+      if (topic === 'sofia/temperatura') document.getElementById('temp').textContent = text;
+      if (topic === 'sofia/humedad') document.getElementById('hum').textContent = text;
+      if (topic === 'sofia/luz') document.getElementById('luz').textContent = text;
+
+      if (topic === 'sofia/alerta/temp') document.getElementById('alerta-temp').textContent = text;
+      if (topic === 'sofia/alerta/hum') document.getElementById('alerta-hum').textContent = text;
+      if (topic === 'sofia/alerta/luz') document.getElementById('alerta-luz').textContent = text;
+    });
+  </script>
+</body>
+</html>
