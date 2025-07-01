@@ -1,49 +1,42 @@
-
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
   <meta charset="UTF-8" />
-  <title>Monitor Remoto MQTT</title>
+  <title>Estación Meteorológica</title>
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
-  <h1>Datos en tiempo real (desde test.mosquitto.org)</h1>
-  <p><strong>Temperatura:</strong> <span id="temp">---</span> °C</p>
-  <p><strong>Humedad:</strong> <span id="hum">---</span> %</p>
-  <p><strong>Luz:</strong> <span id="luz">---</span> %</p>
-  <p><strong>Alertas:</strong></p>
-  <ul>
-    <li><strong>Temperatura:</strong> <span id="alerta-temp">---</span></li>
-    <li><strong>Humedad:</strong> <span id="alerta-hum">---</span></li>
-    <li><strong>Luz:</strong> <span id="alerta-luz">---</span></li>
-  </ul>
+  <h1>Estación Meteorológica</h1>
+  <p>🌡️ Temperatura: <span id="temp">--</span> °C</p>
+  <p>💧 Humedad: <span id="hum">--</span> %</p>
+  <p>💡 Luz: <span id="luz">--</span> %</p>
+  <p>🚨 Alerta Temp: <span id="alerta-temp">--</span></p>
+  <p>🚨 Alerta Hum: <span id="alerta-hum">--</span></p>
+  <p>🚨 Alerta Luz: <span id="alerta-luz">--</span></p>
 
   <script>
-    const client = mqtt.connect('wss://test.mosquitto.org:8081');
+    const client = mqtt.connect("wss://test.mosquitto.org:8081");
 
-    client.on('connect', function () {
-      console.log('Conectado a Mosquitto');
-      const topics = [
-        'sofia/temperatura',
-        'sofia/humedad',
-        'sofia/luz',
-        'sofia/alerta/temp',
-        'sofia/alerta/hum',
-        'sofia/alerta/luz'
-      ];
-      topics.forEach(t => client.subscribe(t));
+    client.on("connect", function () {
+      console.log("Conectado a MQTT");
+      client.subscribe("esp32/temperatura");
+      client.subscribe("esp32/humedad");
+      client.subscribe("esp32/luz");
+      client.subscribe("esp32/alerta-temp");
+      client.subscribe("esp32/alerta-hum");
+      client.subscribe("esp32/alerta-luz");
     });
 
-    client.on('message', function (topic, message) {
-      const text = message.toString();
-      if (topic === 'sofia/temperatura') document.getElementById('temp').textContent = text;
-      if (topic === 'sofia/humedad') document.getElementById('hum').textContent = text;
-      if (topic === 'sofia/luz') document.getElementById('luz').textContent = text;
-
-      if (topic === 'sofia/alerta/temp') document.getElementById('alerta-temp').textContent = text;
-      if (topic === 'sofia/alerta/hum') document.getElementById('alerta-hum').textContent = text;
-      if (topic === 'sofia/alerta/luz') document.getElementById('alerta-luz').textContent = text;
+    client.on("message", function (topic, message) {
+      const data = message.toString();
+      if (topic === "esp32/temperatura") document.getElementById("temp").textContent = data;
+      else if (topic === "esp32/humedad") document.getElementById("hum").textContent = data;
+      else if (topic === "esp32/luz") document.getElementById("luz").textContent = data;
+      else if (topic === "esp32/alerta-temp") document.getElementById("alerta-temp").textContent = data;
+      else if (topic === "esp32/alerta-hum") document.getElementById("alerta-hum").textContent = data;
+      else if (topic === "esp32/alerta-luz") document.getElementById("alerta-luz").textContent = data;
     });
   </script>
 </body>
 </html>
+
