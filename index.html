@@ -1,24 +1,69 @@
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-<script>
-  const client = mqtt.connect("wss://test.mosquitto.org:8081");
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estación Meteorológica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1em;
+      margin: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
 
-  client.on("connect", function () {
-    console.log("Conectado a MQTT");
-    client.subscribe("esp32/temperatura");
-    client.subscribe("esp32/humedad");
-    client.subscribe("esp32/luz");
-    client.subscribe("esp32/alerta-temp");
-    client.subscribe("esp32/alerta-hum");
-    client.subscribe("esp32/alerta-luz");
-  });
+    h1 {
+      text-align: center;
+    }
 
-  client.on("message", function (topic, message) {
-    const data = message.toString();
-    if (topic === "esp32/temperatura") document.getElementById("temp").textContent = data;
-    else if (topic === "esp32/humedad") document.getElementById("hum").textContent = data;
-    else if (topic === "esp32/luz") document.getElementById("luz").textContent = data;
-    else if (topic === "esp32/alerta-temp") document.getElementById("alerta-temp").textContent = data;
-    else if (topic === "esp32/alerta-hum") document.getElementById("alerta-hum").textContent = data;
-    else if (topic === "esp32/alerta-luz") document.getElementById("alerta-luz").textContent = data;
-  });
-</script>
+    .dato {
+      background-color: white;
+      padding: 1em;
+      margin: 1em auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      text-align: center;
+      font-size: 1.5em;
+    }
+
+    @media (max-width: 600px) {
+      .dato {
+        font-size: 1.2em;
+        padding: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🌦 Estación Meteorológica</h1>
+
+  <div class="dato">🌡️ Temperatura: <span id="temp">---</span> °C</div>
+  <div class="dato">💧 Humedad: <span id="hum">---</span> %</div>
+  <div class="dato">🔆 Luz: <span id="luz">---</span> %</div>
+
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script>
+    const client = mqtt.connect("wss://test.mosquitto.org:8081");
+
+    client.on("connect", () => {
+      console.log("Conectado al broker");
+      client.subscribe("esp32/temperatura");
+      client.subscribe("esp32/humedad");
+      client.subscribe("esp32/luz");
+    });
+
+    client.on("message", (topic, message) => {
+      if (topic === "esp32/temperatura") {
+        document.getElementById("temp").textContent = message.toString();
+      } else if (topic === "esp32/humedad") {
+        document.getElementById("hum").textContent = message.toString();
+      } else if (topic === "esp32/luz") {
+        document.getElementById("luz").textContent = message.toString();
+      }
+    });
+  </script>
+</body>
+</html>
+
