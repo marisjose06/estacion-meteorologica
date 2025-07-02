@@ -1,3 +1,14 @@
+<!--Le pide a ChatGPT que hiciera este html con el siguiente prompt (las anotaciones estan hechas por mi para explicar y referenciar lo que hizo la IA):Estoy 
+haciendo que una ESP32
+mida tres variables: temperatura, humedad y luz y los envío a el broker MQTT Mosquitto (test.mosquitto.org) 
+a través de WebSockets (wss://test.mosquitto.org:8081). Uso los tópicos: "esp32/temperatura", "esp32/humedad" y
+"esp32/luz" para cada una. También envío mensajes de alerta en caso de valores críticos, usando los tópicos 
+"esp32/alerta-temp", "esp32/alerta-hum" y "esp32/alerta-luz".
+Quiero crear una página web simple, solo en HTML y JavaScript, que se pueda subir a GitHub Pages. 
+Debe conectarse al broker MQTT utilizando WebSockets, suscribirse a los seis tópicos, y mostrar los datos en 
+tiempo real, que los valores se actualicen automáticamente sin necesidad de recargar la página. Utiliza la
+librería MQTT.js desde un CDN como unpkg.com, y no agregues estilos visuales ni emojis. Genérame el archivo index.html completo que haga esto. 
+-->
 <!DOCTYPE html> <!-- -->
 <html lang="es">
 <head>
