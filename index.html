@@ -32,7 +32,7 @@
     client.on("message", (topic, message) => {//esta parte recibe los mensajes MQTT y despues se convierte a texto para poder usarlo, similar a lo que se hace en este enlace: https://gist.github.com/narutaro/6461c0524f7d7ff01e21c2ecb0be84ca
       const msg = message.toString();
       if (topic === "esp32/temperatura") {
-        document.getElementById("temp").textContent = msg;
+        document.getElementById("temp").textContent = msg;//esta parte actualiza el texto en la pagina,y este enlace lo explica: https://www.w3schools.com/js/js_htmldom_html.asp?utm_source=chatgpt.com
       } else if (topic === "esp32/humedad") {
         document.getElementById("hum").textContent = msg;
       } else if (topic === "esp32/luz") {
