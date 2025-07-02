@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- -->
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- permite que la página se ve correctamente en todo tipo de pantallas, tal como lo explica este enlace: https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Viewport_meta_element -->
   <title>Estación Meteorológica</title>
 </head>
 <body>
@@ -15,12 +15,13 @@
   <h2>Luz: <span id="luz">---</span> %</h2>
   <p><strong>Alerta:</strong> <span id="alerta-luz">---</span></p>
 
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-  <script>
-    const client = mqtt.connect("wss://test.mosquitto.org:8081");
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script> <!--   Carga la librería MQTT.js desde el CDN unpkg.com, tal como lo explica este enlace:https://www.emqx.com/en/blog/connect-to-mqtt-broker-with-websocket -->
 
-    client.on("connect", () => {
-      client.subscribe("esp32/temperatura");
+  <script>
+    const client = mqtt.connect("wss://test.mosquitto.org:8081");// const client = mqtt.connect() es una función viene de la librería MQTT.js que se usa para establecer una conexión MQTT desde el navegador  y wss://test.mosquitto.org:8081 es el URL delbroker público de Mosquitto, asi mismo es usado en este enlace:https://gist.github.com/narutaro/6461c0524f7d7ff01e21c2ecb0be84ca -->
+
+    client.on("connect", () => { // se le aplica un metodo al objeto client que permite la conexion, tal como se hace en este enlace: https://www.emqx.com/en/blog/mqtt-js-tutorial
+      client.subscribe("esp32/temperatura");//.suscribe es para suscribirse a los topicos necesarios, tal como se explica en este enlace: https://www.emqx.com/en/blog/mqtt-js-tutorial
       client.subscribe("esp32/humedad");
       client.subscribe("esp32/luz");
       client.subscribe("esp32/alerta-temp");
@@ -28,7 +29,7 @@
       client.subscribe("esp32/alerta-luz");
     });
 
-    client.on("message", (topic, message) => {
+    client.on("message", (topic, message) => {//esta parte recibe los mensajes MQTT y despues se convierte a texto para poder usarlo, similar a lo que se hace en este enlace: https://gist.github.com/narutaro/6461c0524f7d7ff01e21c2ecb0be84ca
       const msg = message.toString();
       if (topic === "esp32/temperatura") {
         document.getElementById("temp").textContent = msg;
